@@ -22,7 +22,7 @@ load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))   # replaces: anthropic.Anthropic(...)
 
 # Model to use — free on Groq
-GROQ_MODEL = "llama-3.1-70b-versatile"             # replaces: "claude-sonnet-4-6"
+GROQ_MODEL = "llama-3.3-70b-versatile"             # replaces: "claude-sonnet-4-6"
 
 
 def get_plain_summary(contract_text, doc_type="General Contract"):
