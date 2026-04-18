@@ -186,3 +186,12 @@ That means approximately **4,800 analyses per day** on the free tier.
 Legal contracts are written to protect the party with the lawyer.
 This tool levels the playing field for everyday people — renters, employees, borrowers —
 who sign documents without fully understanding what they are agreeing to.
+
+## Presemted By : Parallel Minds 
+- Aasmeet Kaur ( Team Leader )
+- Sukhmanpreet Kaur
+- Simrandeep Kaur
+- Diya Ohri
+- Kartika Angural
+- Garima Mahajan
+
