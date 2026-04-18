@@ -10,7 +10,7 @@ HOW TO RUN:
 WHAT IT DOES:
     1. Shows the upload interface
     2. Extracts text from uploaded file (via extractor.py)
-    3. Sends text to Claude for analysis (via analyzer.py)
+    3. Sends text to groq for analysis (via analyzer.py)
     4. Formats and displays the risk map (via risk_formatter.py)
     5. Offers a downloadable report (via report.py)
 
