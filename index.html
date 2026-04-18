@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Know What You Sign ⚖️</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --purple:    #7c3aed;
+  --purple-lt: #a78bfa;
+  --blue:      #3b82f6;
+  --teal:      #06b6d4;
+  --red:       #ef4444;
+  --amber:     #f59e0b;
+  --green:     #10b981;
+  --bg1:       #07071a;
+  --bg2:       #0d0d2b;
+  --bg3:       #1a0a2e;
+  --glass:     rgba(255,255,255,0.035);
+  --border:    rgba(255,255,255,0.07);
+  --text:      #e0e0ff;
+  --muted:     rgba(180,180,255,0.5);
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  background: linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 35%,var(--bg3) 65%,#0a1628 100%);
+  min-height:100vh;
+  font-family:'Inter',sans-serif;
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   PARTICLES CANVAS
+═══════════════════════════════════════════════ */
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+}
+
+/* ═══════════════════════════════════════════════
+   LAYOUT WRAPPER
+═══════════════════════════════════════════════ */
+.wrap{
+  position:relative;
+  z-index:1;
+  max-width:1400px;
+  margin:0 auto;
+  padding:0 28px 60px;
+}
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+.hero{
+  text-align:center;
+  padding:64px 24px 44px;
+}
+
+.hero-title{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(2rem,5.5vw,5rem);
+  font-weight:900;
+  background:linear-gradient(135deg,#a78bfa,#60a5fa,#34d399,#a78bfa);
+  background-size:300% 300%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:bubblePop 1.3s cubic-bezier(0.34,1.56,0.64,1) both,
+            gradientShift 5s ease 1.3s infinite;
+  letter-spacing:4px;
+  line-height:1.15;
+  filter:drop-shadow(0 0 30px rgba(139,92,246,.45));
+}
+
+@keyframes bubblePop{
+  0%  {transform:scale(.2);opacity:0;filter:drop-shadow(0 0 0 rgba(139,92,246,0))}
+  55% {transform:scale(1.12);filter:drop-shadow(0 0 55px rgba(139,92,246,.9))}
+  75% {transform:scale(.96)}
+  90% {transform:scale(1.03)}
+  100%{transform:scale(1);opacity:1;filter:drop-shadow(0 0 28px rgba(139,92,246,.45))}
+}
+
+@keyframes gradientShift{
+  0%,100%{background-position:0% 50%}
+  50%    {background-position:100% 50%}
+}
+
+.hero-sub{
+  font-size:.9rem;
+  color:var(--muted);
+  margin-top:14px;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  animation:fadeUp .9s ease .7s both;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to  {opacity:1;transform:translateY(0)}
+}
+
+/* ═══════════════════════════════════════════════
+   GLASS CARD
+═══════════════════════════════════════════════ */
+.card{
+  background:var(--glass);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border:1px solid var(--border);
+  border-radius:20px;
+  box-shadow:0 8px 32px rgba(0,0,0,.45),
+             inset 0 1px 0 rgba(255,255,255,.08);
+  padding:24px 28px;
+  transition:border-color .3s,box-shadow .3s;
+}
+
+.card:hover{
+  border-color:rgba(139,92,246,.22);
+  box-shadow:0 8px 32px rgba(0,0,0,.45),
+             0 0 24px rgba(139,92,246,.08),
+             inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.section-tag{
+  font-family:'Orbitron',monospace;
+  font-size:.6rem;
+  letter-spacing:3px;
+  color:rgba(139,92,246,.75);
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+
+.panel-title{
+  font-size:1.1rem;
+  font-weight:600;
+  margin-bottom:14px;
+}
+
+/* ═══════════════════════════════════════════════
+   UPLOAD ROW
+═══════════════════════════════════════════════ */
+.upload-row{
+  display:grid;
+  grid-template-columns:1fr 260px;
+  gap:16px;
+  margin-bottom:16px;
+  animation:fadeUp .8s ease .4s both;
+}
+
+/* UPLOAD BOX */
+.upload-box{
+  border:2px dashed rgba(139,92,246,.3);
+  border-radius:18px;
+  background:rgba(139,92,246,.03);
+  padding:32px 24px;
+  cursor:pointer;
+  transition:border-color .3s,box-shadow .3s,background .3s;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  min-height:160px;
+  user-select:none;
+}
+
+.upload-box:hover,.upload-box.drag-over{
+  border-color:rgba(139,92,246,.65);
+  background:rgba(139,92,246,.07);
+  box-shadow:0 0 28px rgba(139,92,246,.14);
+}
+
+.upload-icon{font-size:2.8rem;line-height:1}
+
+.upload-text{
+  font-size:.95rem;
+  font-weight:500;
+  color:rgba(210,210,255,.85);
+}
+
+.upload-sub{
+  font-size:.78rem;
+  color:var(--muted);
+}
+
+.upload-filename{
+  display:none;
+  font-size:.82rem;
+  color:#a78bfa;
+  font-weight:600;
+  text-align:center;
+  word-break:break-all;
+}
+
+/* Shake for invalid file */
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  18%    {transform:translateX(-9px)}
+  36%    {transform:translateX(9px)}
+  54%    {transform:translateX(-6px)}
+  72%    {transform:translateX(6px)}
+  90%    {transform:translateX(-3px)}
+}
+.shake{animation:shake .55s ease}
+
+/* SETTINGS BOX */
+.settings-box{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+select{
+  width:100%;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;
+  color:var(--text);
+  padding:10px 14px;
+  font-family:'Inter',sans-serif;
+  font-size:.85rem;
+  cursor:pointer;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23a78bfa' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+}
+
+select option{background:#1a1a3e;color:var(--text)}
+
+/* ANALYZE BUTTON */
+.btn-analyze{
+  width:100%;
+  padding:14px;
+  background:linear-gradient(135deg,var(--purple),#4f46e5);
+  border:none;
+  border-radius:14px;
+  color:#fff;
+  font-family:'Orbitron',monospace;
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:2.5px;
+  cursor:pointer;
+  transition:all .3s;
+  box-shadow:0 4px 22px rgba(124,58,237,.4);
+}
+
+.btn-analyze:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 32px rgba(124,58,237,.65);
+  background:linear-gradient(135deg,#8b5cf6,#6366f1);
+}
+
+.btn-analyze:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+  transform:none;
+}
+
+/* STATUS BAR */
+.status-bar{
+  display:none;
+  border-radius:12px;
+  padding:11px 18px;
+  font-size:.82rem;
+  margin-bottom:14px;
+  animation:fadeUp .4s ease;
+}
+
+.status-ok {background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);color:#34d399}
+.status-err{background:rgba(239,68,68,.09); border:1px solid rgba(239,68,68,.25); color:#f87171}
+
+/* ═══════════════════════════════════════════════
+   TOAST NOTIFICATION
+═══════════════════════════════════════════════ */
+.toast{
+  position:fixed;
+  top:22px;right:22px;
+  background:rgba(239,68,68,.12);
+  border:1px solid rgba(239,68,68,.35);
+  color:#f87171;
+  padding:13px 20px;
+  border-radius:14px;
+  font-size:.84rem;
+  font-weight:500;
+  max-width:340px;
+  transform:translateX(120%);
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  z-index:9999;
+  backdrop-filter:blur(20px);
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+
+.toast.show{transform:translateX(0)}
+
+/* ═══════════════════════════════════════════════
+   LOADING OVERLAY
+═══════════════════════════════════════════════ */
+.loading-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(7,7,26,.82);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
+}
+
+.loading-overlay.show{display:flex}
+
+.spinner{
+  width:56px;height:56px;
+  border:3px solid rgba(139,92,246,.2);
+  border-top-color:var(--purple);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.loading-text{
+  font-family:'Orbitron',monospace;
+  font-size:.78rem;
+  letter-spacing:2px;
+  color:var(--purple-lt);
+  animation:pulse 1.8s ease infinite;
+}
+
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+
+/* ═══════════════════════════════════════════════
+   RESULTS SECTION
+═══════════════════════════════════════════════ */
+#results{display:none}
+
+/* METRICS */
+.metrics-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:18px;
+  animation:fadeUp .6s ease both;
+}
+
+.metric-chip{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px 12px;
+  text-align:center;
+  transition:border-color .3s;
+}
+
+.m-high  {border-color:rgba(239,68,68,.15);background:rgba(239,68,68,.04)}
+.m-medium{border-color:rgba(245,158,11,.15);background:rgba(245,158,11,.04)}
+.m-low   {border-color:rgba(16,185,129,.15);background:rgba(16,185,129,.04)}
+.m-total {border-color:rgba(139,92,246,.2); background:rgba(139,92,246,.05)}
+
+.metric-num{
+  font-family:'Orbitron',monospace;
+  font-size:2rem;
+  font-weight:700;
+  line-height:1;
+}
+
+.m-high   .metric-num{color:var(--red);  text-shadow:0 0 18px rgba(239,68,68,.55)}
+.m-medium .metric-num{color:var(--amber);text-shadow:0 0 18px rgba(245,158,11,.55)}
+.m-low    .metric-num{color:var(--green);text-shadow:0 0 18px rgba(16,185,129,.55)}
+.m-total  .metric-num{color:var(--purple-lt);text-shadow:0 0 18px rgba(167,139,250,.55)}
+
+.metric-lbl{
+  font-size:.6rem;
+  color:var(--muted);
+  margin-top:5px;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+}
+
+/* LEGEND */
+.legend{
+  display:flex;
+  gap:22px;
+  flex-wrap:wrap;
+  margin-bottom:18px;
+  animation:fadeUp .7s ease .15s both;
+}
+
+.leg-item{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:.75rem;
+  color:rgba(190,190,255,.6);
+}
+
+.leg-dot{
+  width:9px;height:9px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+
+.d-high  {background:var(--red);  box-shadow:0 0 7px rgba(239,68,68,.9)}
+.d-medium{background:var(--amber);box-shadow:0 0 7px rgba(245,158,11,.9)}
+.d-low   {background:var(--green);box-shadow:0 0 7px rgba(16,185,129,.9)}
+
+/* TWO COLUMN LAYOUT */
+.results-grid{
+  display:grid;
+  grid-template-columns:1.4fr 1fr;
+  gap:20px;
+  align-items:start;
+}
+
+/* ═══════════════════════════════════════════════
+   CLAUSE CARDS
+═══════════════════════════════════════════════ */
+.clause-card{
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.055);
+  border-radius:16px;
+  margin-bottom:12px;
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  transition:transform .35s cubic-bezier(.4,0,.2,1),
+             box-shadow .35s,border-color .35s;
+  animation:fadeUp .5s ease both;
+}
+
+/* Left accent bar */
+.clause-card::before{
+  content:'';
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:3px;
+  border-radius:3px 0 0 3px;
+}
+
+.cc-high  {border-color:rgba(239,68,68,.18) }
+.cc-medium{border-color:rgba(245,158,11,.18)}
+.cc-low   {border-color:rgba(16,185,129,.18)}
+
+.cc-high::before  {background:var(--red);  box-shadow:0 0 12px rgba(239,68,68,.9)}
+.cc-medium::before{background:var(--amber);box-shadow:0 0 12px rgba(245,158,11,.9)}
+.cc-low::before   {background:var(--green);box-shadow:0 0 12px rgba(16,185,129,.9)}
+
+.clause-card:hover{transform:translateY(-4px)}
+.cc-high:hover  {box-shadow:0 12px 32px rgba(239,68,68,.16); border-color:rgba(239,68,68,.4)}
+.cc-medium:hover{box-shadow:0 12px 32px rgba(245,158,11,.16);border-color:rgba(245,158,11,.4)}
+.cc-low:hover   {box-shadow:0 12px 32px rgba(16,185,129,.16);border-color:rgba(16,185,129,.4)}
+
+.card-top{padding:16px 18px 14px}
+
+.risk-badge{
+  display:inline-block;
+  font-size:.58rem;
+  font-weight:700;
+  letter-spacing:2px;
+  padding:3px 10px;
+  border-radius:20px;
+  margin-bottom:9px;
+  text-transform:uppercase;
+}
+
+.b-high  {background:rgba(239,68,68,.12); color:#f87171;border:1px solid rgba(239,68,68,.28)}
+.b-medium{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.28)}
+.b-low   {background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.28)}
+
+.clause-text{
+  font-size:.85rem;
+  color:rgba(210,210,255,.82);
+  line-height:1.55;
+}
+
+/* Expandable details on hover */
+.card-details{
+  max-height:0;
+  overflow:hidden;
+  opacity:0;
+  transition:max-height .45s cubic-bezier(.4,0,.2,1),
+             opacity .3s ease,
+             padding .3s ease;
+  padding:0 18px;
+}
+
+.clause-card:hover .card-details{
+  max-height:320px;
+  opacity:1;
+  padding:0 18px 16px;
+}
+
+.detail-row{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px solid rgba(255,255,255,.05);
+}
+
+.detail-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+
+.detail-label{
+  font-size:.65rem;
+  font-weight:700;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:3px;
+}
+
+.detail-text{
+  font-size:.8rem;
+  color:rgba(200,200,255,.75);
+  line-height:1.5;
+}
+
+/* Tooltip */
+.clause-card[data-tooltip]:hover::after{
+  content:attr(data-tooltip);
+  position:absolute;
+  top:-42px;left:50%;
+  transform:translateX(-50%);
+  background:rgba(20,20,50,.95);
+  border:1px solid rgba(139,92,246,.3);
+  color:rgba(200,200,255,.9);
+  font-size:.72rem;
+  padding:7px 12px;
+  border-radius:8px;
+  white-space:nowrap;
+  pointer-events:none;
+  z-index:10;
+  box-shadow:0 4px 16px rgba(0,0,0,.5);
+  backdrop-filter:blur(12px);
+}
+
+.no-risk{color:var(--green);font-size:.9rem;padding:10px 0}
+
+/* ═══════════════════════════════════════════════
+   RIGHT PANEL
+═══════════════════════════════════════════════ */
+.right-panel{display:flex;flex-direction:column;gap:18px}
+
+/* EXPLAIN */
+.toggle-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:14px;
+}
+
+.toggle-btn{
+  flex:1;
+  padding:7px 14px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;
+  color:var(--muted);
+  font-size:.78rem;
+  font-family:'Inter',sans-serif;
+  cursor:pointer;
+  transition:all .25s;
+}
+
+.toggle-btn.active{
+  background:rgba(139,92,246,.18);
+  border-color:rgba(139,92,246,.4);
+  color:var(--purple-lt);
+  box-shadow:0 0 14px rgba(139,92,246,.2);
+}
+
+.explain-content{
+  background:rgba(139,92,246,.05);
+  border:1px solid rgba(139,92,246,.14);
+  border-radius:14px;
+  padding:16px 18px;
+}
+
+.explain-emoji{font-size:1.3rem;margin-bottom:8px}
+
+.explain-text{
+  font-size:.86rem;
+  color:rgba(210,210,255,.85);
+  line-height:1.7;
+}
+
+.explain-analogy{
+  font-size:.78rem;
+  color:rgba(167,139,250,.65);
+  font-style:italic;
+  margin-top:8px;
+  padding-top:8px;
+  border-top:1px solid rgba(139,92,246,.12);
+}
+
+/* RISK REPORT CARD */
+.gauge-wrap{text-align:center;padding:14px 0 6px}
+
+.gauge-overall-label{
+  font-size:.62rem;
+  color:var(--muted);
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  margin-top:-4px;
+}
+
+/* BARS */
+.bar-block{margin-bottom:14px}
+
+.bar-header{
+  display:flex;
+  justify-content:space-between;
+  font-size:.76rem;
+  color:var(--muted);
+  margin-bottom:5px;
+}
+
+.bar-pct{font-weight:600}
+.pct-fin{color:#f87171}
+.pct-priv{color:#c084fc}
+.pct-leg{color:#fbbf24}
+
+.bar-track{
+  height:7px;
+  background:rgba(255,255,255,.04);
+  border-radius:4px;
+  overflow:hidden;
+}
+
+.bar-fill{
+  height:100%;
+  border-radius:4px;
+  width:0%;
+  transition:width 1.6s cubic-bezier(.4,0,.2,1);
+}
+
+.bf-fin {background:linear-gradient(90deg,var(--red),#f97316);box-shadow:0 0 8px rgba(239,68,68,.35)}
+.bf-priv{background:linear-gradient(90deg,#a855f7,#6366f1);box-shadow:0 0 8px rgba(168,85,247,.35)}
+.bf-leg {background:linear-gradient(90deg,var(--amber),#eab308);box-shadow:0 0 8px rgba(245,158,11,.35)}
+
+/* DOWNLOAD */
+.btn-download{
+  width:100%;
+  padding:12px;
+  background:rgba(16,185,129,.1);
+  border:1px solid rgba(16,185,129,.28);
+  border-radius:12px;
+  color:#34d399;
+  font-family:'Inter',sans-serif;
+  font-size:.84rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .3s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+.btn-download:hover{
+  background:rgba(16,185,129,.2);
+  box-shadow:0 0 22px rgba(16,185,129,.2);
+}
+
+/* DIVIDER */
+.divider{
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(139,92,246,.25),transparent);
+  margin:6px 0 14px;
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:28px 24px 40px;
+  font-size:.68rem;
+  color:rgba(180,180,255,.25);
+  letter-spacing:.6px;
+  position:relative;
+  z-index:1;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(139,92,246,.35);border-radius:2px}
+
+/* Hidden file input */
+#fileInput{display:none}
+
+/* ═══════════════════════════════════════════════
+   MISMATCH WARNING BANNER
+═══════════════════════════════════════════════ */
+.mismatch-banner{
+  display:none;
+  background:rgba(245,158,11,.07);
+  border:1px solid rgba(245,158,11,.35);
+  border-radius:16px;
+  padding:20px 24px;
+  margin-bottom:18px;
+  animation:fadeUp .5s ease both;
+}
+
+.mismatch-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.mismatch-icon{font-size:1.5rem}
+
+.mismatch-title{
+  font-family:'Orbitron',monospace;
+  font-size:.78rem;
+  letter-spacing:2px;
+  color:#fbbf24;
+  text-transform:uppercase;
+}
+
+.mismatch-body{
+  font-size:.87rem;
+  color:rgba(255,230,160,.8);
+  line-height:1.65;
+  margin-bottom:16px;
+}
+
+.mismatch-body strong{color:#fbbf24}
+
+.mismatch-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.btn-switch{
+  padding:10px 20px;
+  background:rgba(245,158,11,.18);
+  border:1px solid rgba(245,158,11,.45);
+  border-radius:10px;
+  color:#fbbf24;
+  font-family:'Inter',sans-serif;
+  font-size:.82rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .25s;
+}
+
+.btn-switch:hover{
+  background:rgba(245,158,11,.3);
+  box-shadow:0 0 18px rgba(245,158,11,.25);
+}
+
+.btn-force{
+  padding:10px 20px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;
+  color:rgba(200,200,255,.6);
+  font-family:'Inter',sans-serif;
+  font-size:.82rem;
+  cursor:pointer;
+  transition:all .25s;
+}
+
+.btn-force:hover{
+  background:rgba(255,255,255,.08);
+  color:rgba(200,200,255,.9);
+}
+</style>
+</head>
+<body>
+
+<!-- Particle background -->
+<canvas id="particles"></canvas>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Reading your document...</div>
+</div>
+
+<!-- HIDDEN FILE INPUT -->
+<input type="file" id="fileInput" accept=".pdf,.doc,.docx"/>
+
+<div class="wrap">
+
+  <!-- ── HERO ── -->
+  <header class="hero">
+    <h1 class="hero-title">Know What You Sign</h1>
+    <p class="hero-sub">⚖️ &nbsp; AI-Powered Legal Intelligence &nbsp;·&nbsp; Plain Language &nbsp;·&nbsp; Risk Protection</p>
+  </header>
+
+  <!-- ── UPLOAD ROW ── -->
+  <div class="upload-row">
+
+    <div class="card" style="padding:0">
+      <div class="upload-box" id="uploadBox">
+        <div class="upload-icon" id="uploadIcon">📄✨</div>
+        <div class="upload-text" id="uploadText">Upload your contract (PDF or DOC)</div>
+        <div class="upload-sub" id="uploadSub">Drag &amp; drop here, or click to browse</div>
+        <div class="upload-filename" id="uploadFilename"></div>
+      </div>
+    </div>
+
+    <div class="settings-box card">
+      <div class="section-tag">Document Type</div>
+      <select id="docType">
+        <option>Rental Agreement</option>
+        <option>Employment Contract</option>
+        <option>Loan Agreement</option>
+        <option>Terms of Service</option>
+        <option>General Contract</option>
+      </select>
+      <button class="btn-analyze" id="analyzeBtn" onclick="runAnalysis()">⚡&nbsp; ANALYZE</button>
+    </div>
+
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar" id="statusBar"></div>
+
+  <!-- ── MISMATCH WARNING ── -->
+  <div class="mismatch-banner" id="mismatchBanner">
+    <div class="mismatch-header">
+      <span class="mismatch-icon">⚠️</span>
+      <span class="mismatch-title">Document Type Mismatch Detected</span>
+    </div>
+    <div class="mismatch-body">
+      You selected <strong id="mismatchSelected"></strong>, but this document
+      appears to be a <strong id="mismatchDetected"></strong>.<br/>
+      Analyzing with the wrong category may produce inaccurate risk results.
+      Please re-upload under the correct type, or choose an action below.
+    </div>
+    <div class="mismatch-actions">
+      <button class="btn-switch" id="btnSwitch" onclick="switchToDetected()">
+        ✅ &nbsp;Switch to <span id="switchLabel"></span> &amp; Analyze
+      </button>
+      <button class="btn-force" onclick="analyzeAnyway()">
+        Continue anyway with <span id="forceLabel"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── RESULTS ── -->
+  <section id="results">
+
+    <!-- Metrics -->
+    <div class="metrics-row">
+      <div class="metric-chip m-high">
+        <div class="metric-num" id="mHigh">0</div>
+        <div class="metric-lbl">High Risk</div>
+      </div>
+      <div class="metric-chip m-medium">
+        <div class="metric-num" id="mMedium">0</div>
+        <div class="metric-lbl">Moderate</div>
+      </div>
+      <div class="metric-chip m-low">
+        <div class="metric-num" id="mLow">0</div>
+        <div class="metric-lbl">Low Risk</div>
+      </div>
+      <div class="metric-chip m-total">
+        <div class="metric-num" id="mTotal">0</div>
+        <div class="metric-lbl">Total Flagged</div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot d-high"></div>High Risk — serious impact on rights or money</div>
+      <div class="leg-item"><div class="leg-dot d-medium"></div>Moderate — unfair but manageable</div>
+      <div class="leg-item"><div class="leg-dot d-low"></div>Low Risk — slightly unusual, minor impact</div>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div class="results-grid">
+
+      <!-- LEFT: Clause Cards -->
+      <div>
+        <div class="card">
+          <div class="section-tag">Document Analysis</div>
+          <div class="panel-title">Flagged Clauses &nbsp;<span style="font-size:.75rem;color:var(--muted);font-family:'Inter';font-weight:400;letter-spacing:0">(hover to expand)</span></div>
+          <div id="clauseContainer"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Explain + Risk Report + Download -->
+      <div class="right-panel">
+
+        <!-- Explain Like I'm 18 -->
+        <div class="card">
+          <div class="section-tag">Plain Language Panel</div>
+          <div class="panel-title">Explain Like I'm 18 💬</div>
+          <div class="toggle-row">
+            <button class="toggle-btn active" data-mode="normal"  onclick="switchMode('normal')">Normal</button>
+            <button class="toggle-btn"        data-mode="simple"  onclick="switchMode('simple')">⚡ Super Simple</button>
+          </div>
+          <div class="explain-content" id="explainNormal">
+            <div class="explain-emoji">📄</div>
+            <div class="explain-text" id="explainText"></div>
+          </div>
+          <div class="explain-content" id="explainSimpleDiv" style="display:none">
+            <div class="explain-emoji">🧒</div>
+            <div class="explain-text" id="explainSimple"></div>
+            <div class="explain-analogy">Think of it like: you're agreeing to follow someone else's rules. Breaking them could cost you money or your rights.</div>
+          </div>
+        </div>
+
+        <!-- Risk Report Dashboard -->
+        <div class="card">
+          <div class="section-tag">Risk Dashboard</div>
+          <div class="panel-title">Risk Report 📊</div>
+
+          <!-- SVG Gauge -->
+          <div class="gauge-wrap">
+            <svg width="200" height="110" viewBox="0 0 200 110" style="overflow:visible">
+              <!-- Track arc -->
+              <path id="gaugeTrack"
+                d="M 20 96 A 82 82 0 0 1 180 96"
+                fill="none" stroke="rgba(255,255,255,0.05)"
+                stroke-width="14" stroke-linecap="round"/>
+              <!-- Glow arc (slightly wider, more transparent) -->
+              <path id="gaugeGlow"
+                d="M 20 96 A 82 82 0 0 1 180 96"
+                fill="none" stroke="#10b981"
+                stroke-width="20" stroke-linecap="round"
+                stroke-dasharray="0 258"
+                opacity="0.25"/>
+              <!-- Fill arc -->
+              <path id="gaugeArc"
+                d="M 20 96 A 82 82 0 0 1 180 96"
+                fill="none" stroke="#10b981"
+                stroke-width="14" stroke-linecap="round"
+                stroke-dasharray="0 258"/>
+              <!-- Label -->
+              <text id="gaugeLabel"
+                x="100" y="87"
+                text-anchor="middle"
+                font-family="Orbitron,monospace"
+                font-size="16" font-weight="700"
+                fill="#10b981">—</text>
+            </svg>
+            <div class="gauge-overall-label">Overall Risk Score</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Financial Risk -->
+          <div class="bar-block">
+            <div class="bar-header">
+              <span>Financial Risk</span>
+              <span class="bar-pct pct-fin" id="pctFin">0%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill bf-fin" id="barFin"></div></div>
+          </div>
+
+          <!-- Privacy Risk -->
+          <div class="bar-block">
+            <div class="bar-header">
+              <span>Privacy Risk</span>
+              <span class="bar-pct pct-priv" id="pctPriv">0%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill bf-priv" id="barPriv"></div></div>
+          </div>
+
+          <!-- Legal Exposure -->
+          <div class="bar-block">
+            <div class="bar-header">
+              <span>Legal Exposure</span>
+              <span class="bar-pct pct-leg" id="pctLeg">0%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill bf-leg" id="barLeg"></div></div>
+          </div>
+
+        </div>
+
+        <!-- Download -->
+        <div class="card" style="padding:18px 22px">
+          <div class="section-tag">Export</div>
+          <button class="btn-download" onclick="downloadReport()">📄 &nbsp;Download Full Report (.txt)</button>
+        </div>
+
+      </div><!-- end right panel -->
+    </div><!-- end results-grid -->
+
+  </section><!-- end results -->
+
+</div><!-- end wrap -->
+
+<footer>⚠️ &nbsp; AI-generated analysis — not legal advice. Always consult a qualified lawyer before signing any document.</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════════ */
+let selectedFile  = null;
+let analysisData  = null;
+let explainMode   = 'normal';
+
+/* ═══════════════════════════════════════════════════════════
+   PARTICLE SYSTEM
+═══════════════════════════════════════════════════════════ */
+(function initParticles() {
+  const canvas = document.getElementById('particles');
+  const ctx    = canvas.getContext('2d');
+  let W, H, dots;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function makeDot() {
+    return {
+      x:     Math.random() * (W || 1400),
+      y:     Math.random() * (H || 800),
+      r:     Math.random() * 1.4 + 0.4,
+      vx:    (Math.random() - 0.5) * 0.28,
+      vy:    (Math.random() - 0.5) * 0.28,
+      alpha: Math.random() * 0.35 + 0.08,
+    };
+  }
+
+  resize();
+  dots = Array.from({ length: 90 }, makeDot);
+  window.addEventListener('resize', resize);
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    /* connections */
+    for (let i = 0; i < dots.length; i++) {
+      for (let j = i + 1; j < dots.length; j++) {
+        const dx   = dots[i].x - dots[j].x;
+        const dy   = dots[i].y - dots[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 130) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(139,92,246,${0.11 * (1 - dist / 130)})`;
+          ctx.lineWidth   = 0.5;
+          ctx.moveTo(dots[i].x, dots[i].y);
+          ctx.lineTo(dots[j].x, dots[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    /* dots */
+    dots.forEach(d => {
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(139,92,246,${d.alpha})`;
+      ctx.fill();
+      d.x += d.vx; d.y += d.vy;
+      if (d.x < 0 || d.x > W) d.vx *= -1;
+      if (d.y < 0 || d.y > H) d.vy *= -1;
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+})();
+
+/* ═══════════════════════════════════════════════════════════
+   DRAG & DROP + FILE VALIDATION
+═══════════════════════════════════════════════════════════ */
+const uploadBox  = document.getElementById('uploadBox');
+const fileInput  = document.getElementById('fileInput');
+
+uploadBox.addEventListener('click', () => fileInput.click());
+
+uploadBox.addEventListener('dragover', e => {
+  e.preventDefault();
+  uploadBox.classList.add('drag-over');
+});
+
+uploadBox.addEventListener('dragleave', () => {
+  uploadBox.classList.remove('drag-over');
+});
+
+uploadBox.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadBox.classList.remove('drag-over');
+  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) handleFile(fileInput.files[0]);
+});
+
+function handleFile(file) {
+  const valid = /\.(pdf|doc|docx)$/i.test(file.name);
+
+  if (!valid) {
+    showToast('❌ Invalid file format. Please upload a PDF or DOC file.');
+    uploadBox.classList.add('shake');
+    setTimeout(() => uploadBox.classList.remove('shake'), 600);
+    return;
+  }
+
+  selectedFile = file;
+
+  /* Update upload box visuals */
+  document.getElementById('uploadIcon').textContent   = '✅';
+  document.getElementById('uploadText').textContent   = file.name;
+  document.getElementById('uploadSub').textContent    = `${(file.size / 1024).toFixed(1)} KB · Ready to analyze`;
+
+  showStatus(`Document loaded — ready to analyze: ${file.name}`, 'ok');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════════ */
+let toastTimer = null;
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4500);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STATUS BAR
+═══════════════════════════════════════════════════════════ */
+function showStatus(msg, type) {
+  const bar = document.getElementById('statusBar');
+  bar.textContent  = (type === 'ok' ? '✓  ' : '❌  ') + msg;
+  bar.className    = `status-bar status-${type}`;
+  bar.style.display = 'block';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANALYZE
+═══════════════════════════════════════════════════════════ */
+async function runAnalysis() {
+  if (!selectedFile) {
+    showToast('❌ Please upload a document first.');
+    return;
+  }
+
+  const docType  = document.getElementById('docType').value;
+  const formData = new FormData();
+  formData.append('file',     selectedFile);
+  formData.append('doc_type', docType);
+
+  /* Show loading */
+  const overlay = document.getElementById('loading');
+  const ltxt    = document.getElementById('loadingText');
+  overlay.classList.add('show');
+  ltxt.textContent = 'Reading your document...';
+
+  const msgs = [
+    [2200,  'Generating plain-language summary...'],
+    [5500,  'Scanning for risky clauses...'],
+    [9000,  'Ranking clauses by impact...'],
+  ];
+  const timers = msgs.map(([delay, txt]) => setTimeout(() => { ltxt.textContent = txt; }, delay));
+
+  try {
+    const res = await fetch('/analyze', { method:'POST', body: formData });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Analysis failed');
+    }
+
+    const data = await res.json();
+
+    /* ── Type mismatch detected ── */
+    if (data.type_mismatch) {
+      showMismatchWarning(data.selected_type, data.detected_type);
+      return;
+    }
+
+    analysisData = data;
+    renderResults(analysisData);
+
+  } catch (err) {
+    showToast(`❌ ${err.message}`);
+  } finally {
+    timers.forEach(clearTimeout);
+    overlay.classList.remove('show');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MISMATCH WARNING
+═══════════════════════════════════════════════════════════ */
+function showMismatchWarning(selected, detected) {
+  document.getElementById('mismatchSelected').textContent = selected;
+  document.getElementById('mismatchDetected').textContent = detected;
+  document.getElementById('switchLabel').textContent      = detected;
+  document.getElementById('forceLabel').textContent       = selected;
+
+  const banner = document.getElementById('mismatchBanner');
+  banner.style.display = 'block';
+  banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* Switch dropdown to detected type and re-run */
+async function switchToDetected() {
+  const detected = document.getElementById('mismatchDetected').textContent;
+  document.getElementById('docType').value = detected;
+  document.getElementById('mismatchBanner').style.display = 'none';
+  await runAnalysis();
+}
+
+/* Ignore mismatch and force-analyze with original selection */
+async function analyzeAnyway() {
+  document.getElementById('mismatchBanner').style.display = 'none';
+
+  const docType  = document.getElementById('docType').value;
+  const formData = new FormData();
+  formData.append('file',     selectedFile);
+  formData.append('doc_type', docType);
+  formData.append('force',    'true');      /* tells backend to skip classification */
+
+  const overlay = document.getElementById('loading');
+  const ltxt    = document.getElementById('loadingText');
+  overlay.classList.add('show');
+  ltxt.textContent = 'Analyzing document...';
+
+  try {
+    const res  = await fetch('/analyze', { method:'POST', body: formData });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Analysis failed');
+    analysisData = data;
+    renderResults(analysisData);
+  } catch (err) {
+    showToast(`❌ ${err.message}`);
+  } finally {
+    overlay.classList.remove('show');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER RESULTS
+═══════════════════════════════════════════════════════════ */
+function renderResults(data) {
+  const { summary, risks, counts } = data;
+  const total   = Math.max(risks.length, 1);
+  const highPct = Math.round((counts.HIGH   / total) * 100);
+  const medPct  = Math.round((counts.MEDIUM / total) * 100);
+  const expPct  = Math.min(highPct + medPct, 100);
+
+  /* Overall risk level */
+  let overall, gaugePct, gaugeColor;
+  if      (counts.HIGH >= 3)                           { overall = 'HIGH';     gaugePct = 82; gaugeColor = '#ef4444'; }
+  else if (counts.HIGH >= 1 || counts.MEDIUM >= 3)     { overall = 'MODERATE'; gaugePct = 51; gaugeColor = '#f59e0b'; }
+  else                                                 { overall = 'LOW';      gaugePct = 20; gaugeColor = '#10b981'; }
+
+  /* Show results section */
+  const section = document.getElementById('results');
+  section.style.display = 'block';
+  setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+
+  /* Metrics */
+  document.getElementById('mHigh').textContent   = counts.HIGH;
+  document.getElementById('mMedium').textContent = counts.MEDIUM;
+  document.getElementById('mLow').textContent    = counts.LOW;
+  document.getElementById('mTotal').textContent  = risks.length;
+
+  /* Clauses */
+  renderClauses(risks);
+
+  /* Explain */
+  renderExplain(summary);
+
+  /* Gauge + bars (after short delay so layout paints first) */
+  setTimeout(() => {
+    animateGauge(gaugePct, gaugeColor, overall);
+    triggerBars(highPct, medPct, expPct);
+  }, 350);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER CLAUSE CARDS
+═══════════════════════════════════════════════════════════ */
+function renderClauses(risks) {
+  const container = document.getElementById('clauseContainer');
+  container.innerHTML = '';
+
+  if (!risks.length) {
+    container.innerHTML = '<p class="no-risk">✓ No significant risks detected in this document.</p>';
+    return;
+  }
+
+  const tooltips = {
+    HIGH:   'This clause significantly limits your rights or could cost you money.',
+    MEDIUM: 'This clause is unfair or unusual — review carefully before signing.',
+    LOW:    'This clause is slightly unusual but has only minor impact.',
+  };
+
+  risks.forEach((risk, i) => {
+    const lv  = (risk.risk_level || 'LOW').toUpperCase();
+    const cls = lv.toLowerCase();
+    const tip = tooltips[lv] || '';
+
+    const card = document.createElement('div');
+    card.className = `clause-card cc-${cls}`;
+    card.style.animationDelay = `${i * 0.07}s`;
+    card.setAttribute('data-tooltip', tip);
+
+    card.innerHTML = `
+      <div class="card-top">
+        <span class="risk-badge b-${cls}">${lv} RISK</span>
+        <div class="clause-text">${escHtml(risk.clause)}</div>
+      </div>
+      <div class="card-details">
+        <div class="detail-row">
+          <span class="detail-icon">💬</span>
+          <div>
+            <div class="detail-label">Simplified Version</div>
+            <div class="detail-text">${escHtml(risk.plain_english)}</div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <span class="detail-icon">⚠️</span>
+          <div>
+            <div class="detail-label">Why Risky</div>
+            <div class="detail-text">${escHtml(risk.why_risky)}</div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <span class="detail-icon">🔍</span>
+          <div>
+            <div class="detail-label">Suggestion</div>
+            <div class="detail-text">Ask for this clause to be removed or renegotiated before you sign.</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EXPLAIN PANEL
+═══════════════════════════════════════════════════════════ */
+function renderExplain(summary) {
+  document.getElementById('explainText').textContent = summary;
+  const sentences = summary.split('.').map(s => s.trim()).filter(Boolean);
+  document.getElementById('explainSimple').textContent = sentences.slice(0, 2).join('. ') + '.';
+}
+
+function switchMode(mode) {
+  explainMode = mode;
+  document.getElementById('explainNormal').style.display    = mode === 'normal' ? 'block' : 'none';
+  document.getElementById('explainSimpleDiv').style.display = mode === 'simple' ? 'block' : 'none';
+  document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GAUGE ANIMATION
+═══════════════════════════════════════════════════════════ */
+function animateGauge(targetPct, color, label) {
+  const arc    = document.getElementById('gaugeArc');
+  const glow   = document.getElementById('gaugeGlow');
+  const lbl    = document.getElementById('gaugeLabel');
+  const maxLen = 258;
+  const target = (targetPct / 100) * maxLen;
+  let current  = 0;
+
+  arc.setAttribute('stroke',  color);
+  glow.setAttribute('stroke', color);
+  lbl.setAttribute('fill',    color);
+  lbl.textContent = label;
+  lbl.style.filter = `drop-shadow(0 0 10px ${color})`;
+
+  function step() {
+    current = Math.min(current + 4.5, target);
+    const d = `${current.toFixed(1)} ${maxLen}`;
+    arc.setAttribute('stroke-dasharray',  d);
+    glow.setAttribute('stroke-dasharray', d);
+    if (current < target) requestAnimationFrame(step);
+  }
+
+  requestAnimationFrame(step);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BAR ANIMATIONS
+═══════════════════════════════════════════════════════════ */
+function triggerBars(finPct, privPct, legPct) {
+  /* Set widths (CSS transition handles animation) */
+  setTimeout(() => {
+    document.getElementById('barFin').style.width  = finPct  + '%';
+    document.getElementById('barPriv').style.width = privPct + '%';
+    document.getElementById('barLeg').style.width  = legPct  + '%';
+
+    document.getElementById('pctFin').textContent  = finPct  + '%';
+    document.getElementById('pctPriv').textContent = privPct + '%';
+    document.getElementById('pctLeg').textContent  = legPct  + '%';
+  }, 80);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DOWNLOAD REPORT
+═══════════════════════════════════════════════════════════ */
+function downloadReport() {
+  if (!analysisData || !analysisData.report) {
+    showToast('❌ No report available. Run analysis first.');
+    return;
+  }
+  const blob = new Blob([analysisData.report], { type: 'text/plain' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'know_what_you_sign_report.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UTILITY
+═══════════════════════════════════════════════════════════ */
+function escHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+</script>
+</body>
+</html>
