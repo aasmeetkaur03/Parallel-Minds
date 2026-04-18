@@ -24,6 +24,59 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))   # replaces: anthropic.Anthrop
 # Model to use — free on Groq
 GROQ_MODEL = "llama-3.3-70b-versatile"             # replaces: "claude-sonnet-4-6"
 
+# Valid document type labels (must match frontend dropdown exactly)
+VALID_DOC_TYPES = [
+    "Rental Agreement",
+    "Employment Contract",
+    "Loan Agreement",
+    "Terms of Service",
+    "General Contract",
+]
+
+
+def classify_document(contract_text):
+    """
+    Quickly classify what type of legal document this is.
+
+    PARAMETERS:
+        contract_text (str) : first portion of the contract text
+
+    RETURNS:
+        str : one of the VALID_DOC_TYPES labels, or "General Contract" if unclear
+
+    PURPOSE:
+        Used by backend.py to detect if the user selected the wrong document type.
+        Only sends the first 2000 characters to keep it fast and cheap.
+    """
+    prompt = f"""You are a legal document classifier.
+
+Read this legal document excerpt and identify what TYPE of document it is.
+
+Respond with ONLY one of these exact labels — nothing else:
+- Rental Agreement
+- Employment Contract
+- Loan Agreement
+- Terms of Service
+- General Contract
+
+DOCUMENT EXCERPT:
+{contract_text[:2000]}
+
+Your answer (one label only):"""
+
+    response = client.chat.completions.create(
+        model=GROQ_MODEL,
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=15      # short answer — we only need the label
+    )
+
+    raw    = response.choices[0].message.content.strip()
+    # Match against valid types (case-insensitive partial match for safety)
+    for vtype in VALID_DOC_TYPES:
+        if vtype.lower() in raw.lower():
+            return vtype
+    return "General Contract"
+
 
 def get_plain_summary(contract_text, doc_type="General Contract"):
     """
