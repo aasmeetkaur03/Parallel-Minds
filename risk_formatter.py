@@ -1,7 +1,7 @@
 """
 risk_formatter.py
 -----------------
-PURPOSE : Parses Claude's raw risk text and converts it into
+PURPOSE : Parses groq's raw risk text and converts it into
           a Python list of dictionaries that app.py can display.
 
 USED BY : app.py (after get_risk_map() returns raw text)
@@ -11,7 +11,7 @@ DEPENDS ON : nothing (pure Python, no libraries needed)
 
 def parse_risk_output(raw_text):
     """
-    Parse Claude's structured risk output into a list of dicts.
+    Parse groq's structured risk output into a list of dicts.
 
     PARAMETERS:
         raw_text (str) : full raw response from get_risk_map()
