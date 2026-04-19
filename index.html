@@ -692,6 +692,121 @@ footer{
   z-index:1;
 }
 
+/* ═══════════════════════════════════════════════
+   CLAUSE IMPORTANCE RANKING PANEL
+═══════════════════════════════════════════════ */
+.ranking-panel{
+  background:rgba(99,102,241,.07);
+  border:1px solid rgba(99,102,241,.25);
+  border-radius:18px;
+  padding:22px 24px 18px;
+  margin-bottom:22px;
+  animation:fadeUp .5s ease both;
+}
+
+.ranking-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:4px;
+}
+
+.ranking-tag{
+  font-family:'Orbitron',monospace;
+  font-size:.65rem;
+  letter-spacing:2.5px;
+  color:rgba(139,92,246,.8);
+  text-transform:uppercase;
+}
+
+.ranking-title{
+  font-family:'Orbitron',monospace;
+  font-size:1rem;
+  font-weight:700;
+  color:#e0e7ff;
+  margin-bottom:4px;
+}
+
+.ranking-subtitle{
+  font-size:.78rem;
+  color:rgba(180,180,255,.5);
+  margin-bottom:16px;
+  letter-spacing:.5px;
+}
+
+.ranking-list{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.ranking-item{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(139,92,246,.15);
+  border-radius:12px;
+  padding:12px 16px;
+  transition:all .25s;
+  cursor:default;
+}
+
+.ranking-item:hover{
+  background:rgba(139,92,246,.1);
+  border-color:rgba(139,92,246,.4);
+  transform:translateX(4px);
+  box-shadow:0 4px 20px rgba(99,102,241,.15);
+}
+
+.rank-badge{
+  min-width:32px;
+  height:32px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Orbitron',monospace;
+  font-size:.75rem;
+  font-weight:700;
+  color:#fff;
+  box-shadow:0 0 12px rgba(99,102,241,.4);
+  flex-shrink:0;
+}
+
+.rank-badge.top1{ background:linear-gradient(135deg,#f59e0b,#ef4444); box-shadow:0 0 14px rgba(239,68,68,.35); }
+.rank-badge.top2{ background:linear-gradient(135deg,#8b5cf6,#6366f1); }
+.rank-badge.top3{ background:linear-gradient(135deg,#6366f1,#3b82f6); }
+
+.rank-info{ flex:1; min-width:0; }
+
+.rank-title{
+  font-size:.88rem;
+  font-weight:600;
+  color:#c7d2fe;
+  margin-bottom:3px;
+}
+
+.rank-location{
+  font-size:.75rem;
+  color:rgba(180,180,255,.45);
+  font-style:italic;
+  margin-bottom:5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.rank-why{
+  font-size:.78rem;
+  color:rgba(200,200,255,.65);
+  line-height:1.5;
+}
+
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -821,6 +936,7 @@ footer{
     <div class="settings-box card">
       <div class="section-tag">Document Type</div>
       <select id="docType">
+        <option value="" disabled selected>— Select Document Type —</option>
         <option>Rental Agreement</option>
         <option>Employment Contract</option>
         <option>Loan Agreement</option>
@@ -890,8 +1006,17 @@ footer{
     <!-- Two Column Layout -->
     <div class="results-grid">
 
-      <!-- LEFT: Clause Cards -->
+      <!-- LEFT: Ranking + Clause Cards -->
       <div>
+
+        <!-- Clause Importance Ranking -->
+        <div class="ranking-panel" id="rankingPanel" style="display:none">
+          <div class="section-tag ranking-tag">⚡ Read First</div>
+          <div class="ranking-title">Top Clauses to Read First</div>
+          <div class="ranking-subtitle">AI-ranked by impact on your rights &amp; money</div>
+          <ul class="ranking-list" id="rankingList"></ul>
+        </div>
+
         <div class="card">
           <div class="section-tag">Document Analysis</div>
           <div class="panel-title">Flagged Clauses &nbsp;<span style="font-size:.75rem;color:var(--muted);font-family:'Inter';font-weight:400;letter-spacing:0">(hover to expand)</span></div>
@@ -1151,31 +1276,41 @@ function showStatus(msg, type) {
    ANALYZE
 ═══════════════════════════════════════════════════════════ */
 async function runAnalysis() {
+  /* Guard: file must be uploaded */
   if (!selectedFile) {
     showToast('❌ Please upload a document first.');
     return;
   }
 
-  const docType  = document.getElementById('docType').value;
+  /* Guard: document type must be selected */
+  const docType = document.getElementById('docType').value;
+  if (!docType) {
+    showToast('❌ Please select a document type before analyzing.');
+    document.getElementById('docType').focus();
+    return;
+  }
+
   const formData = new FormData();
   formData.append('file',     selectedFile);
   formData.append('doc_type', docType);
 
-  /* Show loading */
+  /* Show loading overlay */
   const overlay = document.getElementById('loading');
   const ltxt    = document.getElementById('loadingText');
   overlay.classList.add('show');
   ltxt.textContent = 'Reading your document...';
 
   const msgs = [
-    [2200,  'Generating plain-language summary...'],
-    [5500,  'Scanning for risky clauses...'],
-    [9000,  'Ranking clauses by impact...'],
+    [2200, 'Generating plain-language summary...'],
+    [5500, 'Scanning for risky clauses...'],
+    [9000, 'Ranking clauses by importance...'],
   ];
-  const timers = msgs.map(([delay, txt]) => setTimeout(() => { ltxt.textContent = txt; }, delay));
+  const timers = msgs.map(([delay, txt]) =>
+    setTimeout(() => { ltxt.textContent = txt; }, delay)
+  );
 
   try {
-    const res = await fetch('/analyze', { method:'POST', body: formData });
+    const res = await fetch('/analyze', { method: 'POST', body: formData });
 
     if (!res.ok) {
       const err = await res.json();
@@ -1194,7 +1329,12 @@ async function runAnalysis() {
     renderResults(analysisData);
 
   } catch (err) {
-    showToast(`❌ ${err.message}`);
+    /* Detect network / connection errors specifically */
+    if (err instanceof TypeError && err.message.toLowerCase().includes('fetch')) {
+      showToast('📡 Network disconnected — please check your internet connection and try again.');
+    } else {
+      showToast(`❌ ${err.message}`);
+    }
   } finally {
     timers.forEach(clearTimeout);
     overlay.classList.remove('show');
@@ -1245,7 +1385,11 @@ async function analyzeAnyway() {
     analysisData = data;
     renderResults(analysisData);
   } catch (err) {
-    showToast(`❌ ${err.message}`);
+    if (err instanceof TypeError && err.message.toLowerCase().includes('fetch')) {
+      showToast('📡 Network disconnected — please check your internet connection and try again.');
+    } else {
+      showToast(`❌ ${err.message}`);
+    }
   } finally {
     overlay.classList.remove('show');
   }
@@ -1255,7 +1399,7 @@ async function analyzeAnyway() {
    RENDER RESULTS
 ═══════════════════════════════════════════════════════════ */
 function renderResults(data) {
-  const { summary, risks, counts } = data;
+  const { summary, risks, counts, clause_ranking } = data;
   const total   = Math.max(risks.length, 1);
   const highPct = Math.round((counts.HIGH   / total) * 100);
   const medPct  = Math.round((counts.MEDIUM / total) * 100);
@@ -1278,6 +1422,9 @@ function renderResults(data) {
   document.getElementById('mLow').textContent    = counts.LOW;
   document.getElementById('mTotal').textContent  = risks.length;
 
+  /* Clause Importance Ranking */
+  renderClauseRanking(clause_ranking || []);
+
   /* Clauses */
   renderClauses(risks);
 
@@ -1289,6 +1436,41 @@ function renderResults(data) {
     animateGauge(gaugePct, gaugeColor, overall);
     triggerBars(highPct, medPct, expPct);
   }, 350);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER CLAUSE IMPORTANCE RANKING
+═══════════════════════════════════════════════════════════ */
+function renderClauseRanking(items) {
+  const panel = document.getElementById('rankingPanel');
+  const list  = document.getElementById('rankingList');
+  list.innerHTML = '';
+
+  if (!items || !items.length) {
+    panel.style.display = 'none';
+    return;
+  }
+
+  panel.style.display = 'block';
+
+  items.forEach((item, idx) => {
+    /* badge color — top 3 get special treatment */
+    const badgeClass = idx === 0 ? 'top1' : idx === 1 ? 'top2' : idx === 2 ? 'top3' : '';
+
+    const li = document.createElement('li');
+    li.className = 'ranking-item';
+    li.style.animationDelay = `${idx * 0.08}s`;
+
+    li.innerHTML = `
+      <div class="rank-badge ${badgeClass}">${item.rank}</div>
+      <div class="rank-info">
+        <div class="rank-title">${escHtml(item.title)}</div>
+        <div class="rank-location">📍 Find it: "${escHtml(item.location)}"</div>
+        <div class="rank-why">${escHtml(item.why_important)}</div>
+      </div>
+    `;
+    list.appendChild(li);
+  });
 }
 
 /* ═══════════════════════════════════════════════════════════
