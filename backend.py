@@ -23,7 +23,7 @@ import io
 import os
 from dotenv import load_dotenv
 
-from analyzer       import get_plain_summary, get_risk_map, classify_document
+from analyzer       import get_plain_summary, get_risk_map, classify_document, get_clause_ranking
 from risk_formatter import parse_risk_output, count_risks
 from report         import generate_report
 
@@ -87,24 +87,26 @@ def analyze():
                 "filename"      : file.filename,
             })
 
-    summary   = get_plain_summary(contract_text, doc_type)
-    raw_risks = get_risk_map(contract_text, doc_type)
-    risks     = parse_risk_output(raw_risks)
-    counts    = count_risks(risks)
-    report    = generate_report(doc_type, summary, risks, file.filename)
+    summary        = get_plain_summary(contract_text, doc_type)
+    raw_risks      = get_risk_map(contract_text, doc_type)
+    risks          = parse_risk_output(raw_risks)
+    counts         = count_risks(risks)
+    clause_ranking = get_clause_ranking(contract_text, doc_type)
+    report         = generate_report(doc_type, summary, risks, clause_ranking, file.filename)
 
     return jsonify({
-        "summary"   : summary,
-        "risks"     : risks,
-        "counts"    : counts,
-        "word_count": len(contract_text.split()),
-        "report"    : report,
-        "filename"  : file.filename
+        "summary"        : summary,
+        "risks"          : risks,
+        "counts"         : counts,
+        "clause_ranking" : clause_ranking,
+        "word_count"     : len(contract_text.split()),
+        "report"         : report,
+        "filename"       : file.filename
     })
 
 
 if __name__ == "__main__":
     print("\n⚖️  Know What You Sign")
     print("─" * 40)
-    print("📍 Open browser at: http://localhost:5000\n")
+    print(" Open browser at: http://localhost:5000\n")
     app.run(debug=True, port=5000)
