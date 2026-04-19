@@ -4,6 +4,8 @@
 > Built for the **Human Augmentation & Assistive Systems** track —
 > *Extend what people can perceive, decide, and do — especially those underserved by existing tools.*
 
+**Test it Here : https://parallelminds.netlify.app/**
+
 ---
 
 ## What It Does
