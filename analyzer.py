@@ -161,3 +161,83 @@ Be thorough.
     )
 
     return response.choices[0].message.content
+
+
+def get_clause_ranking(contract_text, doc_type="General Contract"):
+    """
+    Identify the TOP 5 most important clauses the signer must read first.
+
+    PARAMETERS:
+        contract_text (str) : full raw text of the contract
+        doc_type      (str) : type of document selected by user
+
+    RETURNS:
+        list of dicts, each with keys:
+            rank          (int) : 1 to 5
+            title         (str) : short clause name e.g. "Termination Rights"
+            location      (str) : first few words to help user find it in the doc
+            why_important (str) : one sentence on why this clause matters most
+
+    PURPOSE:
+        Saves the user's attention — tells them exactly which 5 clauses
+        to read first instead of reading the whole document.
+    """
+
+    prompt = f"""You are a legal expert helping someone who has limited time.
+
+Document Type: {doc_type}
+
+CONTRACT TEXT:
+{contract_text}
+
+Identify the TOP 5 most important clauses this person MUST read before signing.
+Rank them 1 (most critical) to 5 (still very important).
+
+For EACH clause respond in EXACTLY this format:
+
+RANK: [1 to 5]
+TITLE: [Short name like "Termination Rights" or "Payment Penalties"]
+LOCATION: [Quote the first 6-10 words of the actual clause so user can find it]
+WHY IMPORTANT: [One clear sentence explaining why this clause matters most]
+---
+
+Focus on clauses that affect: money, rights, exit options, liability, privacy, or auto-renewal.
+Do NOT include generic or standard boilerplate clauses.
+"""
+
+    response = client.chat.completions.create(
+        model=GROQ_MODEL,
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=700
+    )
+
+    raw   = response.choices[0].message.content
+    items = []
+    blocks = raw.strip().split("---")
+
+    for block in blocks:
+        block = block.strip()
+        if not block:
+            continue
+
+        item = {"rank": 0, "title": "", "location": "", "why_important": ""}
+        for line in block.split("\n"):
+            line = line.strip()
+            if line.startswith("RANK:"):
+                try:
+                    item["rank"] = int(line.replace("RANK:", "").strip())
+                except ValueError:
+                    item["rank"] = 0
+            elif line.startswith("TITLE:"):
+                item["title"]         = line.replace("TITLE:", "").strip()
+            elif line.startswith("LOCATION:"):
+                item["location"]      = line.replace("LOCATION:", "").strip()
+            elif line.startswith("WHY IMPORTANT:"):
+                item["why_important"] = line.replace("WHY IMPORTANT:", "").strip()
+
+        if item["title"]:
+            items.append(item)
+
+    # Sort by rank and keep top 5 only
+    items.sort(key=lambda x: x["rank"])
+    return items[:5]
