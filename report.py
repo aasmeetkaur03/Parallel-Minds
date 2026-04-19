@@ -17,7 +17,7 @@ HOW IT WORKS:
 from datetime import datetime   # built-in Python library
 
 
-def generate_report(doc_type, summary, risks, filename="contract"):
+def generate_report(doc_type, summary, risks, clause_ranking=None, filename="contract"):
     """
     Build a full plain-text analysis report.
 
@@ -51,6 +51,19 @@ def generate_report(doc_type, summary, risks, filename="contract"):
     lines.append(f"   Doc Type : {doc_type}")
     lines.append("=" * 60)
     lines.append("")
+
+    # ── CLAUSE IMPORTANCE RANKING ────────────────────────
+    if clause_ranking:
+        lines.append("TOP 5 CLAUSES TO READ FIRST")
+        lines.append("-" * 40)
+        lines.append("(Read these before anything else — ranked by importance)")
+        lines.append("")
+        for item in clause_ranking:
+            lines.append(f"  #{item['rank']}  {item['title']}")
+            lines.append(f"      Find it  : \"{item['location']}\"")
+            lines.append(f"      Why read : {item['why_important']}")
+            lines.append("")
+        lines.append("")
 
     # ── PLAIN ENGLISH SUMMARY ───────────────────────────
     lines.append("PLAIN ENGLISH SUMMARY")
